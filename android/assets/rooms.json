@@ -14,7 +14,10 @@
 					}
 				],
 				"postActions" : [
-					
+					{
+						"class" : "changeRoom",
+						"name" : "outside"
+					}
 				]
 			},
 			{
@@ -29,6 +32,12 @@
 				]
 			}
 		]
+	},
+	
+	{	
+		"name" : "outside",
+		"description" : "you're outside",
+		"actions" : []
 	}
 ]
 }

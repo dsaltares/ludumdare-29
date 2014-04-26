@@ -73,6 +73,10 @@ public class RoomManager {
 		return null;
 	}
 	
+	public Room getRoom() {
+		return currentRoom;
+	}
+	
 	public void setRoom(String roomName) {
 		if (currentRoom != null && currentRoom.getName().equals(roomName)) {
 			return;

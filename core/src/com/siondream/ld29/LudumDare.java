@@ -39,6 +39,7 @@ public class LudumDare extends Game {
 	public void resize(int width, int height) {
 		viewport.update(width, height);
 		camera.position.set(viewport.getWorldWidth() * 0.5f, viewport.getWorldHeight() * 0.5f, 0.0f);
+		super.resize(width, height);
 	}
 
 	@Override
