@@ -27,6 +27,7 @@ import com.siondream.ld29.room.RoomManager;
 public class GameScreen extends ScreenAdapter implements InputProcessor {
 
 	private RoomManager roomManager;
+	private VignetteController vignetteController;
 	
 	// UI Stuff
 	private Stage stage;
@@ -38,7 +39,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	private Label actionLabel;
 	
 	private float resolution[];
-	private float radius;
 	
 	FrameBuffer fbo;
 	TextureRegion fboRegion;
@@ -46,13 +46,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	public GameScreen() {
 		loadRooms();
 		
+		vignetteController = new VignetteController();
+		
 		Viewport viewport = Env.game.getViewport();
 		stage = new Stage(viewport);
 		
-		
-		
 		resolution = new float[2];
-		radius = 0.6f;
 		
 		createUI();
 	}
@@ -61,6 +60,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	public void render(float delta) {
 		// Update UI stuff
 		descriptionLabel.setText(roomManager.getRoom().getDescription());		
+		
+		vignetteController.update(delta);
 		
 		// Update stage
 		stage.act(delta);
@@ -85,7 +86,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.begin();
 		Assets.shader.setUniform2fv("resolution", resolution , 0, 2);
-		Assets.shader.setUniformf("radius", radius);
+		Assets.shader.setUniformf("radius", vignetteController.getRadius());
 		batch.draw(fboRegion, 0.0f, 0.0f);
 		batch.end();
 		
