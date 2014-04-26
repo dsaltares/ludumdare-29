@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class LudumDare extends Game {
@@ -26,7 +27,7 @@ public class LudumDare extends Game {
 		Env.init(this);
 		
 		camera = new OrthographicCamera();
-		viewport = new ExtendViewport(960, 720, 1280, 720, camera);
+		viewport = new FitViewport(1280, 720, camera);
 		assets = new Assets();
 		
 		screens = new ObjectMap<Class<? extends Screen>, Screen>();

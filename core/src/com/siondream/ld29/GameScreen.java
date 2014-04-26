@@ -32,9 +32,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	private Stage stage;
 	private TextField actionField;
 	private Image titleImage;
+	private Image backgroundImage;
 	private Label descriptionLabel;
 	private Label resultLabel;
 	private Label actionLabel;
+	
+	private float resolution[];
+	private float radius;
 	
 	FrameBuffer fbo;
 	TextureRegion fboRegion;
@@ -44,6 +48,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		
 		Viewport viewport = Env.game.getViewport();
 		stage = new Stage(viewport);
+		
+		
+		
+		resolution = new float[2];
+		radius = 0.6f;
 		
 		createUI();
 	}
@@ -56,21 +65,31 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		// Update stage
 		stage.act(delta);
 		
-		// Render
-		fbo.begin();
 		Viewport viewport = Env.game.getViewport();
+		resolution[0] = Gdx.graphics.getWidth();
+		resolution[1] = Gdx.graphics.getHeight();
+		
+		// Render
+		stage.getSpriteBatch().setShader(null);
+		fbo.begin();
 		viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 		fbo.end();
 		
-//		stage.draw();
 		
 		Batch batch = stage.getSpriteBatch();
+		batch.setShader(Assets.shader);
+		
+		viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.begin();
+		Assets.shader.setUniform2fv("resolution", resolution , 0, 2);
+		Assets.shader.setUniformf("radius", radius);
 		batch.draw(fboRegion, 0.0f, 0.0f);
 		batch.end();
+		
+		stage.draw();
 	}
 
 	@Override
@@ -90,12 +109,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	}
 	
 	@Override
-	public void resize(int width, int height) {
-		fbo = new FrameBuffer(Format.RGBA8888, width, height, false);
+	public void resize(int width, int height) {		
+		positionUI();
+		Viewport viewport = Env.game.getViewport();
+		fbo = new FrameBuffer(Format.RGB888, viewport.getViewportWidth(), viewport.getViewportHeight(), false);
 		fboRegion = new TextureRegion(fbo.getColorBufferTexture());
 		fboRegion.flip(false, true);
-		
-		positionUI();
 	}
 	
 	public RoomManager getRoomManager() {
@@ -174,12 +193,15 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
 		titleImage = new Image(Assets.title);
 		
+		backgroundImage = new Image(Assets.background);
+		
 		descriptionLabel = new Label("This is supposed to be a super long description", Assets.skin);
 		descriptionLabel.setSize(800.0f, 300.0f);
 		descriptionLabel.setWrap(true);
 		
 		resultLabel = new Label("Result", Assets.skin);
 		
+		stage.addActor(backgroundImage);
 		stage.addActor(actionLabel);
 		stage.addActor(actionField);
 		stage.addActor(titleImage);
