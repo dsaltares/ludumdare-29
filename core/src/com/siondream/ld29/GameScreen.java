@@ -163,6 +163,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 						String object = parts[1];
 						
 						roomManager.runAction(verb, object);
+						
+						if (roomManager.isFinished()) {
+							// GAME FINISHED!!
+							
+						}
 					}
 					
 					textField.setText("");

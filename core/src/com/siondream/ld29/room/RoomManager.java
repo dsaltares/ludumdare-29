@@ -73,8 +73,16 @@ public class RoomManager {
 		return null;
 	}
 	
-	public void setRoom(Room room) {
-		currentRoom = room;
+	public void setRoom(String roomName) {
+		if (currentRoom != null && currentRoom.getName().equals(roomName)) {
+			return;
+		}
+		
+		for (Room room : rooms) {
+			if (room.getName().equals(roomName)) {
+				currentRoom = room;
+			}
+		}
 	}
 	
 	public boolean isFinished() {
