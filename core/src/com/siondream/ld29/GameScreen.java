@@ -5,7 +5,6 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.utils.Json;
 import com.siondream.ld29.room.Action;
 import com.siondream.ld29.room.Condition;
-import com.siondream.ld29.room.PostAction;
 import com.siondream.ld29.room.Room;
 import com.siondream.ld29.room.RoomManager;
 

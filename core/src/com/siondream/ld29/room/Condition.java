@@ -4,8 +4,8 @@ import com.siondream.ld29.Env;
 import com.siondream.ld29.GameScreen;
 
 public class Condition {
-	String name;
-	String failMessage;
+	private String name;
+	private String failMessage;
 	
 	public boolean isMet() {
 		RoomManager manager = Env.game.getScreen(GameScreen.class).getRoomManager();

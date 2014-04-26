@@ -3,10 +3,18 @@ package com.siondream.ld29.room;
 import com.badlogic.gdx.utils.Array;
 
 public class Action {
-	String verb;
-	String object;
-	Array<Condition> conditions;
-	Array<PostAction> postActions;
+	private String verb;
+	private String object;
+	private Array<Condition> conditions;
+	private Array<PostAction> postActions;
+	
+	public String getVerb() {
+		return verb;
+	}
+	
+	public String getObject() {
+		return object;
+	}
 	
 	public ActionResult run() {
 		for (Condition condition : conditions) {
