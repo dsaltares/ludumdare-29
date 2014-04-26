@@ -16,6 +16,17 @@
 				"postActions" : [
 					
 				]
+			},
+			{
+				"verb" : "pick",
+				"object" : "key",
+				"conditions" : [],
+				"postActions" : [
+					{
+						"class" : "addFact",
+						"name" : "hasHallKey"
+					}
+				]
 			}
 		]
 	}

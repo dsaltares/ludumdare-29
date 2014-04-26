@@ -23,6 +23,8 @@ public class LudumDare extends Game {
 	
 	@Override
 	public void create () {
+		Env.init(this);
+		
 		camera = new OrthographicCamera();
 		viewport = new ExtendViewport(960, 720, 1280, 720, camera);
 		assets = new Assets();
@@ -36,6 +38,7 @@ public class LudumDare extends Game {
 	@Override
 	public void resize(int width, int height) {
 		viewport.update(width, height);
+		camera.position.set(viewport.getWorldWidth() * 0.5f, viewport.getWorldHeight() * 0.5f, 0.0f);
 	}
 
 	@Override
@@ -101,7 +104,7 @@ public class LudumDare extends Game {
 	
 	private void performScreenChange() {
 		if (nextScreen != null) {
-			setScreen(nextScreen);
+			super.setScreen(nextScreen);
 			nextScreen = null;
 		}
 	}

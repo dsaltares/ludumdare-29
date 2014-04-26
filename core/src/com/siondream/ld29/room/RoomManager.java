@@ -21,9 +21,9 @@ public class RoomManager {
 		currentRoom = rooms.size > 0 ? rooms.get(0) : null;
 	}
 	
-	public void runAction(String verb, String object) {
+	public ActionResult runAction(String verb, String object) {
 		if (currentRoom == null) {
-			return;
+			return new ActionResult(false, "");
 		}
 		
 		Action matchingAction = null;
@@ -45,10 +45,12 @@ public class RoomManager {
 		}
 		
 		Gdx.app.log(LudumDare.TAG, result.message);
+		
+		return result;
 	}
 	
 	public void addFact(String name) {
-		if (facts.contains(name, false)) {
+		if (!facts.contains(name, false)) {
 			facts.add(name);
 		}
 	}
