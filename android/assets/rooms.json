@@ -1,0 +1,23 @@
+{
+"rooms" : [
+	{	
+		"name" : "hall",
+		"description" : "this is the hall",
+		"actions" : [
+			{
+				"verb" : "open",
+				"object" : "door",
+				"conditions" : [
+					{
+						"name" : "hasHallKey",
+						"failMessage" : "you do not have the hall key"
+					}
+				],
+				"postActions" : [
+					
+				]
+			}
+		]
+	}
+]
+}

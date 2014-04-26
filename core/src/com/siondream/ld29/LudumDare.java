@@ -73,6 +73,16 @@ public class LudumDare extends Game {
 		return assets;
 	}
 	
+	public <T extends Screen> T getScreen(Class<T> screenClass) {
+		Screen screen = screens.get(screenClass);
+ 		
+		if (screen == null) {
+			return null;
+		}
+		
+		return screenClass.cast(screen);
+	}
+	
 	public void setScreen(Class<? extends Screen> screenClass) {
 		Screen screen = screens.get(screenClass);
 		
