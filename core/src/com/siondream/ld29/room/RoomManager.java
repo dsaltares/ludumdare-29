@@ -75,5 +75,9 @@ public class RoomManager {
 	
 	public void setRoom(Room room) {
 		currentRoom = room;
-	}	
+	}
+	
+	public boolean isFinished() {
+		return currentRoom != null && currentRoom.getActions().size == 0;
+	}
 }
