@@ -23,6 +23,7 @@
 			{
 				"verb" : "pick",
 				"object" : "key",
+				"success" : "you picked up the key",
 				"conditions" : [],
 				"postActions" : [
 					{

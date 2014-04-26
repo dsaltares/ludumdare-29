@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 public class Action {
 	private String verb;
 	private String object;
+	private String success;
 	private Array<FactCondition> conditions;
 	private Array<PostAction> postActions;
 	
@@ -27,6 +28,6 @@ public class Action {
 			postAction.run();
 		}
 		
-		return new ActionResult(true, "");
+		return new ActionResult(true, success);
 	}
 }

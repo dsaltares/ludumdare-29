@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.siondream.ld29.room.Action;
+import com.siondream.ld29.room.ActionResult;
 import com.siondream.ld29.room.AddFactPostAction;
 import com.siondream.ld29.room.ChangeRoomPostAction;
 import com.siondream.ld29.room.FactCondition;
@@ -221,7 +222,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 						String verb = parts[0];
 						String object = parts[1];
 						
-						roomManager.runAction(verb, object);
+						ActionResult result = roomManager.runAction(verb, object);
+						
+						resultLabel.setText(result.message);
 						
 						if (roomManager.isFinished()) {
 							// GAME FINISHED!!
