@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.utils.Json;
 import com.siondream.ld29.room.Action;
 import com.siondream.ld29.room.AddFactPostAction;
-import com.siondream.ld29.room.Condition;
+import com.siondream.ld29.room.FactCondition;
 import com.siondream.ld29.room.Room;
 import com.siondream.ld29.room.RoomManager;
 
@@ -120,7 +120,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		try {
 			Json json = new Json();
 			json.setElementType(Room.class, "actions", Action.class);
-			json.setElementType(Action.class, "conditions", Condition.class);
+			json.setElementType(Action.class, "conditions", FactCondition.class);
 			json.addClassTag("addFact", AddFactPostAction.class);
 			
 			roomManager = json.fromJson(RoomManager.class, Gdx.files.internal("rooms.json"));

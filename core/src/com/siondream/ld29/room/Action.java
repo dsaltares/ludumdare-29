@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 public class Action {
 	private String verb;
 	private String object;
-	private Array<Condition> conditions;
+	private Array<FactCondition> conditions;
 	private Array<PostAction> postActions;
 	
 	public String getVerb() {
@@ -17,7 +17,7 @@ public class Action {
 	}
 	
 	public ActionResult run() {
-		for (Condition condition : conditions) {
+		for (FactCondition condition : conditions) {
 			if (!condition.isMet()) {
 				return new ActionResult(false, condition.getFailMessage());
 			}
