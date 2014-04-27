@@ -107,7 +107,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
 	@Override
 	public void hide() {
-
+		Assets.song.stop();
 	}
 
 	@Override
@@ -116,6 +116,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		roomManager.reset();
 		stage.setKeyboardFocus(actionField);
 		setRoom(roomManager.getRoom().getName());
+		Assets.song.setLooping(true);
+		Assets.song.play();
 	}
 
 	@Override
