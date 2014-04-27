@@ -276,6 +276,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 					resultLabel.reset();
 					
 					textField.setText("");
+					
+					if (result.success) {
+						Assets.success.play();
+					}
+					else {
+						Assets.failure.play();
+					}
 				}
 			}
 			
