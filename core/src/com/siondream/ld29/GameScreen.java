@@ -223,6 +223,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		descriptionLabel = new TypeWriterLabel("", Assets.skin);
 		descriptionLabel.setSize(800.0f, 300.0f);
 		descriptionLabel.setWrap(true);
+		descriptionLabel.setFontScale(1.2f);
 		descriptionLabel.setCompletionListener(new TypeWriterListener());
 		
 		resultLabel = new TypeWriterLabel("", Assets.skin);
@@ -306,14 +307,14 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		descriptionLabel.setPosition(30.0f, 30.0f);
 			
 		actionGroup.setSize(actionImage.getWidth(), actionImage.getHeight());
-		actionGroup.setPosition(descriptionGroup.getX(), 60.0f);
+		actionGroup.setPosition(descriptionGroup.getX(), descriptionGroup.getY() - actionGroup.getHeight() - 20.0f);
 		
 		actionLabel.setPosition(30.0f, (actionGroup.getHeight() - actionLabel.getHeight()) * 0.5f);
 		actionField.setPosition(actionLabel.getRight() + 20.0f, (actionGroup.getHeight() - actionField.getHeight()) * 0.5f);
 		actionField.setWidth(actionGroup.getWidth() - actionField.getX() - 30.0f);
 
 		resultGroup.setSize(resultImage.getWidth(), resultImage.getHeight());
-		resultGroup.setPosition(descriptionGroup.getX(), descriptionGroup.getY() - 50.0f);
+		resultGroup.setPosition(descriptionGroup.getX(), actionGroup.getY() - resultGroup.getHeight() - 30.0f);
 		
 		resultLabel.setPosition(30.0f, (resultGroup.getHeight() - resultLabel.getHeight()) * 0.5f);
 		
