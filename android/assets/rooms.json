@@ -17,6 +17,20 @@
 				"success" : "false"
 			},
 			{
+				"verb" : "look",
+				"object" : "door",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "Looks like a strong door"
+			},
+			{
+				"verb" : "look",
+				"object" : "cave",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "It's a dark and terrible place, it's starting to get scary"
+			},
+			{
 				"verb" : "kick",
 				"object" : "door",
 				"conditions" : [],
@@ -77,6 +91,76 @@
 						"name" : "corpses"
 					}
 				]
+			},
+			{
+				"verb" : "look",
+				"object" : "lake",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "It doesn't look very cold but it's dirty and you wouldn't swim in it"
+			},
+			{
+				"verb" : "enter",
+				"object" : "lake",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "God no, it looks very dirty, there is no need."
+			},
+			{
+				"verb" : "kill",
+				"object" : "wolf",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "There is no way you would win a fight against the wolf"
+			},
+			{
+				"verb" : "hit",
+				"object" : "wolf",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "The wolf would rip you apart"
+			},
+			{
+				"verb" : "look",
+				"object" : "wolf",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "The wolf is big and looks hungry"
+			},
+			{
+				"verb" : "look",
+				"object" : "break",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "You can see some light coming from the break"
+			},
+			{
+				"verb" : "look",
+				"object" : "door",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "The door has a keyhole"
+			},
+			{
+				"verb" : "punch",
+				"object" : "wolf",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "The wolf would rip you apart"
+			},
+			{
+				"verb" : "kick",
+				"object" : "wolf",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "The wolf would rip you apart"
+			},
+			{
+				"verb" : "push",
+				"object" : "wolf",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "You'd rather not"
 			},
 			{
 				"verb" : "enter",
@@ -171,11 +255,39 @@
 				"postActions" : []
 			},
 			{
+				"verb" : "look",
+				"object" : "treasure",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "It's so shiny!"
+			},
+			{
+				"verb" : "look",
+				"object" : "gold",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "You think of all the things you could do with the treasure"
+			},
+			{
+				"verb" : "look",
+				"object" : "jewels",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "You think of all the things you could do with the treasure"
+			},
+			{
 				"verb" : "take",
 				"object" : "jewels",
 				"message" : "You put a handful of shiny stones in your pocket, this is crazy!",
 				"conditions" : [],
 				"postActions" : []
+			},
+			{
+				"verb" : "look",
+				"object" : "create",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "It's old and dusty, maybe you can open it"
 			},
 			{
 				"verb" : "open",
@@ -255,6 +367,13 @@
 					}
 				]
 			},
+			{
+				"verb" : "look",
+				"object" : "corpses",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "It's awful, you don't want to end up like them"
+			},
 		]
 	},
 	
@@ -295,6 +414,13 @@
 						"name" : "outside"
 					}
 				]
+			},
+			{
+				"verb" : "look",
+				"object" : "ladder",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "It's very tall, the exit might be close"
 			},
 			{
 				"verb" : "use",

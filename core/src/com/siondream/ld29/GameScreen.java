@@ -210,6 +210,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	public void setRoom(String name) {
 		roomManager.setRoom(name);
 		descriptionLabel.setText(roomManager.getRoom().getDescription());
+		actionField.setVisible(false);
+		actionLabel.setVisible(false);
 	}
 
 	private void loadRooms() {
@@ -437,8 +439,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		.start(Env.game.getTweenManager());
 	}
 
-	private class TypeWriterListener implements
-			TypeWriterLabel.CompletionListener {
+	private class TypeWriterListener implements TypeWriterLabel.CompletionListener {
 
 		@Override
 		public void onFinished(TypeWriterLabel label) {
@@ -461,6 +462,19 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
 		@Override
 		public void onFinished(TypeWriterLabel label) {
+			actionField.setTouchable(Touchable.enabled);
+
+			actionField.setVisible(true);
+			actionLabel.setVisible(true);
+
+			Color labelColor = actionLabel.getColor();
+			actionLabel.setColor(labelColor.r, labelColor.g, labelColor.b, 0.0f);
+			actionLabel.addAction(Actions.alpha(1.0f, 2.5f, Interpolation.pow4Out));
+
+			Color fieldColor = actionField.getColor();
+			actionField.setColor(fieldColor.r, fieldColor.g, fieldColor.b, 0.0f);
+			actionField.addAction(Actions.alpha(1.0f, 2.5f, Interpolation.pow4Out));
+			
 			if (roomManager.isFinished()) {
 				animateDescriptionOut();
 			}
