@@ -27,7 +27,7 @@ public class LudumDare extends Game {
 		Env.init(this);
 		
 		camera = new OrthographicCamera();
-		viewport = new FitViewport(1280, 720, camera);
+		viewport = new ExtendViewport(960, 720, 1280, 720, camera);
 		assets = new Assets();
 		
 		screens = new ObjectMap<Class<? extends Screen>, Screen>();
@@ -45,7 +45,7 @@ public class LudumDare extends Game {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		camera.update();

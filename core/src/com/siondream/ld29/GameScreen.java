@@ -9,7 +9,10 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -35,8 +38,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	private TextField actionField;
 	private Image titleImage;
 	private Image backgroundImage;
-	private Label descriptionLabel;
-	private Label resultLabel;
+	private TypeWriterLabel descriptionLabel;
+	private TypeWriterLabel resultLabel;
 	private Label actionLabel;
 	
 	private float resolution[];
@@ -75,7 +78,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		stage.getSpriteBatch().setShader(null);
 		fbo.begin();
 		viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 		fbo.end();
@@ -108,6 +111,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	public void show() {
 		Gdx.input.setInputProcessor(this);
 		roomManager.reset();
+		stage.setKeyboardFocus(actionField);
 	}
 	
 	@Override
@@ -190,18 +194,22 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	private void createUI() {
 		actionLabel = new Label("What do you do?", Assets.skin);
 		actionLabel.setColor(Color.WHITE);
+		actionLabel.setVisible(false);
 		
 		actionField = new TextField("", Assets.skin);
+		actionField.setVisible(false);
 
 		titleImage = new Image(Assets.title);
 		
 		backgroundImage = new Image(Assets.background);
 		
-		descriptionLabel = new Label("This is supposed to be a super long description", Assets.skin);
+		descriptionLabel = new TypeWriterLabel("This is supposed to be a super long description", Assets.skin);
 		descriptionLabel.setSize(800.0f, 300.0f);
 		descriptionLabel.setWrap(true);
+		descriptionLabel.setCompletionListener(new TypeWriterListener());
 		
-		resultLabel = new Label("Result", Assets.skin);
+		resultLabel = new TypeWriterLabel("", Assets.skin);
+		resultLabel.setCompletionListener(new TypeWriterListener());
 		
 		stage.addActor(backgroundImage);
 		stage.addActor(actionLabel);
@@ -223,6 +231,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 						String object = parts[1];
 						
 						ActionResult result = roomManager.runAction(verb, object);
+						
+						actionLabel.setVisible(false);
+						actionField.setTouchable(Touchable.disabled);
 						
 						resultLabel.setText(result.message);
 						
@@ -253,5 +264,25 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		actionField.setPosition(actionLabel.getRight() + 20.0f, actionLabel.getY());
 		
 		resultLabel.setPosition(descriptionLabel.getX(), descriptionLabel.getY() - 50.0f);
+	}
+	
+	private class TypeWriterListener implements TypeWriterLabel.CompletionListener {
+
+		@Override
+		public void onFinished(TypeWriterLabel label) {
+			actionField.setTouchable(Touchable.enabled);
+			
+			actionField.setVisible(true);
+			actionLabel.setVisible(true);
+			
+			Color labelColor = actionLabel.getColor();
+			actionLabel.setColor(labelColor.r, labelColor.g, labelColor.b, 0.0f);
+			actionLabel.addAction(Actions.alpha(1.0f, 2.5f, Interpolation.pow4Out));
+			
+			Color fieldColor = actionField.getColor();
+			actionField.setColor(fieldColor.r, fieldColor.g, fieldColor.b, 0.0f);
+			actionField.addAction(Actions.alpha(1.0f, 2.5f, Interpolation.pow4Out));
+		}
+		
 	}
 }
