@@ -16,10 +16,22 @@ const float VIGNETTE_OPACITY = 0.9;
 
 void main() {
 	vec4 texColor = texture2D(u_texture, v_texCoord);
+	
+	// Scanlines
+	vec4 intensity;
+	if (fract(gl_FragCoord.y * (0.5 * 4.0 / 3.0)) > 0.5) {
+		intensity = vec4(0);
+	} else {
+		intensity = smoothstep(0.2, 0.8, texColor) + normalize(texColor);
+	}
+	
+	texColor = intensity * -0.25 + texColor * 1.1;
+	
+	// Vignette
 	vec2 position = gl_FragCoord.xy / resolution.xy - vec2(0.5);
-	// position.x *= resolution.x / resolution.y;
 	float len = length(position);
 	float vignette = smoothstep(radius, radius-SOFTNESS, len);
 	texColor.rgb = mix(texColor.rgb, texColor.rgb * vignette, VIGNETTE_OPACITY);
-    gl_FragColor = texColor;
+	
+    gl_FragColor = vec4(texColor.r, texColor.g, texColor.b, texColor.a);
 }
