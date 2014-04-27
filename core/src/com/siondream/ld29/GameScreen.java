@@ -57,6 +57,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	private TypeWriterLabel resultLabel;
 	private Label actionLabel;
 	private Label creditLabel;
+	private Label thanksLabel;
 	
 	private int previousWidth;
 	private int previousHeight;
@@ -230,6 +231,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	}
 
 	private void createUI() {
+		stage.clear();
+		
 		actionLabel = new Label("What do you do?", Assets.skin);
 		actionLabel.setColor(Color.WHITE);
 		actionLabel.setVisible(false);
@@ -251,13 +254,16 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		descriptionLabel.setSize(800.0f, 300.0f);
 		descriptionLabel.setWrap(true);
 		descriptionLabel.setFontScale(1.2f);
-		descriptionLabel.setCompletionListener(new TypeWriterListener());
+		descriptionLabel.setCompletionListener(new TypeWriterListenerDescription());
 		descriptionLabel.setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		
 		creditLabel = new Label("A game created by David Saltares in 48h for Ludum Dare #29", Assets.skin);
 		
 		resultLabel = new TypeWriterLabel("", Assets.skin);
 		resultLabel.setCompletionListener(new TypeWriterListener());
+		
+		thanksLabel = new Label("Thanks for playing!", Assets.skin);
+		thanksLabel.setFontScale(2.5f);
 		
 		resultGroup = new WidgetGroup();
 		descriptionGroup = new WidgetGroup();
@@ -285,6 +291,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		stage.addActor(titleImage);
 		stage.addActor(globalGroup);
 		stage.addActor(creditLabel);
+		stage.addActor(thanksLabel);
 		
 		actionField.setTextFieldListener(new TextFieldListener() {
 
@@ -349,6 +356,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		
 		creditLabel.setPosition(Env.game.getViewport().getWorldWidth() - creditLabel.getWidth() - 40.0f, 20.0f);
 		
+		thanksLabel.setPosition(stage.getWidth(), (stage.getHeight() - thanksLabel.getHeight()) * 0.5f);
 		
 		animateIn();
 	}
@@ -401,6 +409,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	}
 	
 	private void animatePanelsOut() {
+		Timeline timeline = Timeline.createSequence();
+		
 		timeline.beginSequence()
 				.push(Tween.to(resultGroup, ActorTweener.Position, 1.0f)
 						   .target(resultGroup.getX(), -resultGroup.getHeight())
@@ -410,6 +420,21 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 						   .ease(TweenEquations.easeInOutQuad))
 				.end()
 				.start(Env.game.getTweenManager());
+	}
+	
+	private void animateDescriptionOut() {
+		Timeline timeline = Timeline.createSequence();
+		
+		timeline.beginSequence()
+		.push(Tween.to(descriptionGroup, ActorTweener.Position, 2.0f)
+			   	   .target(-descriptionGroup.getWidth() - descriptionGroup.getX(), descriptionGroup.getY())
+			   	   .ease(TweenEquations.easeInOutQuad))
+	    .delay(1.0f)
+		.push(Tween.to(thanksLabel, ActorTweener.Position, 1.0f)
+				   .target((stage.getWidth() - thanksLabel.getWidth() * thanksLabel.getFontScaleX()) * 0.5f, thanksLabel.getY())
+				   .ease(TweenEquations.easeInOutQuad))
+		.end()
+		.start(Env.game.getTweenManager());
 	}
 
 	private class TypeWriterListener implements
@@ -430,7 +455,17 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 			actionField.setColor(fieldColor.r, fieldColor.g, fieldColor.b, 0.0f);
 			actionField.addAction(Actions.alpha(1.0f, 2.5f, Interpolation.pow4Out));
 		}
-
 	}
+	
+	private class TypeWriterListenerDescription implements TypeWriterLabel.CompletionListener {
+
+		@Override
+		public void onFinished(TypeWriterLabel label) {
+			if (roomManager.isFinished()) {
+				animateDescriptionOut();
+			}
+		}
+	}
+	
 }
 
