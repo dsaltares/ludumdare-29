@@ -44,8 +44,6 @@ public class RoomManager {
 			result = new ActionResult(false);
 		}
 		
-		Gdx.app.log(LudumDare.TAG, result.message);
-		
 		return result;
 	}
 	

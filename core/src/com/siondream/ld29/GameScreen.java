@@ -55,11 +55,17 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	private TypeWriterLabel descriptionLabel;
 	private TypeWriterLabel resultLabel;
 	private Label actionLabel;
+	private Label creditLabel;
+	
+	private int previousWidth;
+	private int previousHeight;
 
 	private float resolution[];
 
 	FrameBuffer fbo;
 	TextureRegion fboRegion;
+	
+	Timeline timeline;
 
 	public GameScreen() {
 		loadRooms();
@@ -71,6 +77,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
 		resolution = new float[2];
 
+		previousWidth = 0;
+		previousHeight = 0;
+		
 		createUI();
 	}
 
@@ -131,12 +140,17 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
 	@Override
 	public void resize(int width, int height) {
-		positionUI();
-		Viewport viewport = Env.game.getViewport();
-		fbo = new FrameBuffer(Format.RGB888, viewport.getViewportWidth(),
-				viewport.getViewportHeight(), false);
-		fboRegion = new TextureRegion(fbo.getColorBufferTexture());
-		fboRegion.flip(false, true);
+		if (width != previousWidth && height != previousHeight) {
+			positionUI();
+			Viewport viewport = Env.game.getViewport();
+			fbo = new FrameBuffer(Format.RGB888, viewport.getViewportWidth(),
+					viewport.getViewportHeight(), false);
+			fboRegion = new TextureRegion(fbo.getColorBufferTexture());
+			fboRegion.flip(false, true);
+			
+			previousWidth = width;
+			previousHeight = height;
+		}
 	}
 
 	public RoomManager getRoomManager() {
@@ -238,6 +252,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		descriptionLabel.setCompletionListener(new TypeWriterListener());
 		descriptionLabel.setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		
+		creditLabel = new Label("A game created by David Saltares in 48h for Ludum Dare #29", Assets.skin);
+		
 		resultLabel = new TypeWriterLabel("", Assets.skin);
 		resultLabel.setCompletionListener(new TypeWriterListener());
 		
@@ -266,6 +282,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		stage.addActor(backgroundImage);
 		stage.addActor(titleImage);
 		stage.addActor(globalGroup);
+		stage.addActor(creditLabel);
 		
 		actionField.setTextFieldListener(new TextFieldListener() {
 
@@ -325,16 +342,21 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		descriptionLabel.setPosition(30.0f, 30.0f);
 			
 		actionGroup.setSize(actionImage.getWidth(), actionImage.getHeight());
-		actionGroup.setPosition(descriptionGroup.getX(), descriptionGroup.getY() - actionGroup.getHeight() - 20.0f);
+		actionGroup.setPosition(descriptionGroup.getX(), descriptionGroup.getY() - actionGroup.getHeight() - 10.0f);
 		
 		actionLabel.setPosition(30.0f, (actionGroup.getHeight() - actionLabel.getHeight()) * 0.5f);
 		actionField.setPosition(actionLabel.getRight() + 20.0f, (actionGroup.getHeight() - actionField.getHeight()) * 0.5f);
 		actionField.setWidth(actionGroup.getWidth() - actionField.getX() - 30.0f);
 
 		resultGroup.setSize(resultImage.getWidth(), resultImage.getHeight());
-		resultGroup.setPosition(descriptionGroup.getX(), actionGroup.getY() - resultGroup.getHeight() - 30.0f);
+		resultGroup.setPosition(descriptionGroup.getX(), actionGroup.getY() - resultGroup.getHeight() - 15.0f);
 		
 		resultLabel.setPosition(30.0f, (resultGroup.getHeight() - resultLabel.getHeight()) * 0.5f);
+		
+		creditLabel.setPosition(Env.game.getViewport().getWorldWidth() - creditLabel.getWidth() - 40.0f, 20.0f);
+		
+		
+		animateIn();
 	}
 	
 	private void animateIn() {
@@ -353,28 +375,31 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 			
 		};
 		
+		if (timeline != null)
+			Env.game.getTweenManager().killTarget(timeline);
+		
 		Timeline timeline = Timeline.createSequence();
 		
+		globalGroup.setPosition(0, -height);
+		titleImage.setPosition((stage.getWidth() - titleImage.getWidth()) * 0.5f, height);
+		creditLabel.setPosition(stage.getWidth(), 20.0f);
+		
 		timeline.beginSequence()
-			.beginSequence()
-				// Set objects to initial positions
-				.push(Tween.set(titleImage, ActorTweener.Position)
-						   .target((stage.getWidth() - titleImage.getWidth()) * 0.5f, height))
-				.push(Tween.set(globalGroup, ActorTweener.Position)
-						   .target(0.0f, -height))
-			.end()
-			
 			.beginParallel()
 					   
 				// Animate in
 				.push(Tween.to(titleImage, ActorTweener.Position, 1.5f)
 						   .target((stage.getWidth() - titleImage.getWidth()) * 0.5f, stage.getHeight() - titleImage.getHeight() - 40.0f)
-						   .ease(TweenEquations.easeInQuad))
+						   .ease(TweenEquations.easeInOutQuad))
 				.push(Tween.to(globalGroup, ActorTweener.Position, 2.0f)
 						   .target(0.0f, 0.0f)
-						   .ease(TweenEquations.easeInQuad))
+						   .ease(TweenEquations.easeInOutQuad))
 						   .delay(0.5f)
 			.end()
+			
+			.push(Tween.to(creditLabel, ActorTweener.Position, 1.0f)
+					   .target(stage.getWidth() - creditLabel.getWidth() - 40.0f, 20.0f)
+					   .ease(TweenEquations.easeInOutQuad))
 			
 			.end()
 			.setCallback(callback) 
