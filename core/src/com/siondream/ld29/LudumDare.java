@@ -2,11 +2,15 @@ package com.siondream.ld29;
 
 import java.util.Iterator;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -18,6 +22,7 @@ public class LudumDare extends Game {
 	private OrthographicCamera camera;
 	private Viewport viewport;
 	private Assets assets;
+	private TweenManager tweenManager;
 	
 	private ObjectMap<Class<? extends Screen>, Screen> screens;
 	private Screen nextScreen;
@@ -29,6 +34,10 @@ public class LudumDare extends Game {
 		camera = new OrthographicCamera();
 		viewport = new ExtendViewport(960, 720, 1280, 720, camera);
 		assets = new Assets();
+		
+		tweenManager = new TweenManager();
+		Tween.setCombinedAttributesLimit(4);
+		Tween.registerAccessor(Actor.class, new ActorTweener());
 		
 		screens = new ObjectMap<Class<? extends Screen>, Screen>();
 		screens.put(GameScreen.class, new GameScreen());
@@ -49,6 +58,7 @@ public class LudumDare extends Game {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		camera.update();
+		tweenManager.update(Gdx.graphics.getDeltaTime());
 		
 		super.render();
 		
@@ -76,6 +86,10 @@ public class LudumDare extends Game {
 	
 	public Assets getAssets() {
 		return assets;
+	}
+	
+	public TweenManager getTweenManager() {
+		return tweenManager;
 	}
 	
 	public <T extends Screen> T getScreen(Class<T> screenClass) {

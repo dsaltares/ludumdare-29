@@ -1,5 +1,11 @@
 package com.siondream.ld29;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Timeline;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
+import aurelienribon.tweenengine.TweenEquations;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
@@ -45,6 +51,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 	private WidgetGroup descriptionGroup;
 	private WidgetGroup actionGroup;
 	private WidgetGroup resultGroup;
+	private WidgetGroup globalGroup;
 	private TypeWriterLabel descriptionLabel;
 	private TypeWriterLabel resultLabel;
 	private Label actionLabel;
@@ -116,8 +123,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		roomManager.reset();
 		stage.setKeyboardFocus(actionField);
 		setRoom(roomManager.getRoom().getName());
+		descriptionLabel.stop();
 		Assets.song.setLooping(true);
 		Assets.song.play();
+		animateIn();
 	}
 
 	@Override
@@ -215,16 +224,19 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		titleImage = new Image(Assets.title);
 		
 		backgroundImage = new Image(Assets.background);
+		backgroundImage.setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		
 		actionImage = new Image(Assets.smallPanel);
 		resultImage = new Image(Assets.smallPanel);
 		descriptionImage = new Image(Assets.descriptionPanel);
+		descriptionImage.setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		
 		descriptionLabel = new TypeWriterLabel("", Assets.skin);
 		descriptionLabel.setSize(800.0f, 300.0f);
 		descriptionLabel.setWrap(true);
 		descriptionLabel.setFontScale(1.2f);
 		descriptionLabel.setCompletionListener(new TypeWriterListener());
+		descriptionLabel.setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		
 		resultLabel = new TypeWriterLabel("", Assets.skin);
 		resultLabel.setCompletionListener(new TypeWriterListener());
@@ -232,6 +244,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		resultGroup = new WidgetGroup();
 		descriptionGroup = new WidgetGroup();
 		actionGroup = new WidgetGroup();
+		
+		Viewport viewport = Env.game.getViewport();
+		globalGroup = new WidgetGroup();
+		globalGroup.setSize(viewport.getWorldWidth(), viewport.getWorldHeight());
 		
 		resultGroup.addActor(resultImage);
 		resultGroup.addActor(resultLabel);
@@ -243,11 +259,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		actionGroup.addActor(actionLabel);
 		actionGroup.addActor(actionField);
 		
+		globalGroup.addActor(actionGroup);
+		globalGroup.addActor(descriptionGroup);
+		globalGroup.addActor(resultGroup);
+
 		stage.addActor(backgroundImage);
-		stage.addActor(actionGroup);
 		stage.addActor(titleImage);
-		stage.addActor(descriptionGroup);
-		stage.addActor(resultGroup);
+		stage.addActor(globalGroup);
 		
 		actionField.setTextFieldListener(new TextFieldListener() {
 
@@ -317,7 +335,50 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		resultGroup.setPosition(descriptionGroup.getX(), actionGroup.getY() - resultGroup.getHeight() - 30.0f);
 		
 		resultLabel.setPosition(30.0f, (resultGroup.getHeight() - resultLabel.getHeight()) * 0.5f);
+	}
+	
+	private void animateIn() {
+		Viewport viewport = Env.game.getViewport();
+		float width = viewport.getWorldWidth();
+		float height = viewport.getWorldHeight();
 		
+		TweenCallback callback = new TweenCallback() {
+
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+				if (type == TweenCallback.COMPLETE) {
+					descriptionLabel.play();
+				}
+			}
+			
+		};
+		
+		Timeline timeline = Timeline.createSequence();
+		
+		timeline.beginSequence()
+			.beginSequence()
+				// Set objects to initial positions
+				.push(Tween.set(titleImage, ActorTweener.Position)
+						   .target((stage.getWidth() - titleImage.getWidth()) * 0.5f, height))
+				.push(Tween.set(globalGroup, ActorTweener.Position)
+						   .target(0.0f, -height))
+			.end()
+			
+			.beginParallel()
+					   
+				// Animate in
+				.push(Tween.to(titleImage, ActorTweener.Position, 1.5f)
+						   .target((stage.getWidth() - titleImage.getWidth()) * 0.5f, stage.getHeight() - titleImage.getHeight() - 40.0f)
+						   .ease(TweenEquations.easeInQuad))
+				.push(Tween.to(globalGroup, ActorTweener.Position, 2.0f)
+						   .target(0.0f, 0.0f)
+						   .ease(TweenEquations.easeInQuad))
+						   .delay(0.5f)
+			.end()
+			
+			.end()
+			.setCallback(callback) 
+			.start(Env.game.getTweenManager());
 	}
 
 	private class TypeWriterListener implements

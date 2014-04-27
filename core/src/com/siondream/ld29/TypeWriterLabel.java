@@ -41,7 +41,7 @@ public class TypeWriterLabel extends Label {
 	
 	public void stop() {
 		playing = false;
-		reset();
+		timer = 0.0f;
 	}
 	
 	public void play() {
@@ -76,7 +76,7 @@ public class TypeWriterLabel extends Label {
 	@Override
 	public void setText(CharSequence newText) {
 		if (!newText.equals(fullText)) {
-			reset();
+			timer = 0.0f;
 			fullText = newText;
 			totalTime = fullText.length() / lettersPerSecond;
 		}
