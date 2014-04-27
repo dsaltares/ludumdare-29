@@ -4,8 +4,8 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
 public class VignetteController {
-	private static final float maxRadius = 0.70f;
-	private static final float minRadius = 0.60f;
+	private static final float maxRadius = 0.75f;
+	private static final float minRadius = 0.70f;
 	private static final float time = 1.0f;
 	
 	private enum State {
