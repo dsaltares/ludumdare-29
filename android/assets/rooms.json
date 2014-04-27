@@ -1,18 +1,294 @@
 {
 "rooms" : [
 	{	
-		"name" : "hall",
-		"description" : "this is the hall",
+		"name" : "start",
+		"description" : "You slowly regain conciousness, your head hurts and you promise yourself you'll never EVER drink again.
+						 It's humid and dark, you can barely see...
+						 Slowly you realize it's a damned cave... How did you end up there? 
+						 This is really messed up, You need to get out!
+						 There's a wooden door at the end of the room...",
+		"actions" : [
+			{
+				"verb" : "break",
+				"object" : "door",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "You try to kick the door but it doesn't move an inch...",
+				"success" : "false"
+			},
+			{
+				"verb" : "kick",
+				"object" : "door",
+				"conditions" : [],
+				"postActions" : [],
+				"message" : "You try to kick the door but it doesn't move an inch...",
+				"success" : "false"
+			},
+			{
+				"verb" : "open",
+				"object" : "door",
+				"conditions" : [
+					{
+						"name" : "start.rock.pushed",
+						"failMessage" : "It's blocked by a rock, you wonder if you can push it..."
+					}
+				],
+				"postActions" : [
+					{
+						"class" : "changeRoom",
+						"name" : "lake"
+					}
+				]
+			},
+			{
+				"verb" : "push",
+				"object" : "rock",
+				"message" : "You push as hard as you can... Finally the rock rolls to the side",
+				"oneTime" : true,
+				"conditions" : [],
+				"postActions" : [
+					{
+						"class" : "addFact",
+						"name" : "start.rock.pushed"
+					}
+				]
+			}
+		]
+	},
+	
+	{	
+		"name" : "lake",
+		"description" : "You enter a huge room with a lake in the middle. There's light coming in from a hole in the ceiling.
+						 You can go north, on the other side of the lake, but it seems to be guarded by a dangerous looking wolf...
+						 You see a break in the rock on the left and a door on the right",
 		"actions" : [
 			{
 				"verb" : "open",
 				"object" : "door",
 				"conditions" : [
 					{
-						"name" : "hasHallKey",
-						"failMessage" : "you do not have the hall key"
+						"name" : "lake.key.obtained",
+						"failMessage" : "Damn it, it's locked. You need a key."
 					}
 				],
+				"postActions" : [
+					{
+						"class" : "changeRoom",
+						"name" : "corpses"
+					}
+				]
+			},
+			{
+				"verb" : "enter",
+				"object" : "break",
+				"conditions" : [],
+				"postActions" : [
+					{
+						"class" : "changeRoom",
+						"name" : "treasure"
+					}
+				]
+			},
+			{
+				"verb" : "go",
+				"object" : "north",
+				"conditions" : [
+					{
+						"name" : "lake.bone.given",
+						"failMessage" : "You shouldn't go past the huge wolf... Maybe you can distract him."
+					}
+				],
+				"postActions" : [
+					{
+						"class" : "changeRoom",
+						"name" : "ladder"
+					}
+				]
+			},
+			{
+				"verb" : "give",
+				"object" : "bone",
+				"message" : "You throw the wolf a bone and now he seems distracted",
+				"conditions" : [
+					{
+						"name" : "corpses.bone.obtained",
+						"failMessage" : "You cannot do that!"
+					}
+				],
+				"postActions" : [
+					{
+						"class" : "addFact",
+						"name" : "lake.bone.given"
+					},
+					{
+						"class" : "changeDescription",
+						"description" : "You enter a huge room with a lake in the middle. There's light coming in from a hole in the ceiling.
+										 You can go north, on the other side of the lake.
+										 You see a break in the rock on the left and a door on the right
+										 There is a wolf playing with a bone",
+					}
+				]
+			},
+			{
+				"verb" : "throw",
+				"object" : "bone",
+				"message" : "You throw the wolf a bone and now he seems distracted",
+				"conditions" : [
+					{
+						"name" : "corpses.bone.obtained",
+						"failMessage" : "You cannot do that!"
+					}
+				],
+				"postActions" : [
+					{
+						"class" : "addFact",
+						"name" : "lake.bone.given"
+					},
+					{
+						"class" : "changeDescription",
+						"description" : "You enter a huge room with a lake in the middle. There's light coming in from a hole in the ceiling.
+										 You can go north, on the other side of the lake.
+										 You see a break in the rock on the left and a door on the right
+										 There is a wolf playing with a bone",
+					}
+				]
+			}
+		]
+	},
+	
+	{	
+		"name" : "treasure",
+		"description" : "You enter a small room lit by a weak torch.
+						 The light is strong enough to see what's around... Treasure!
+						 Loads of gold, jewels and a mysterious crate! You're rich!
+						 If only you knew how to get out of there...",
+		"actions" : [
+			{
+				"verb" : "take",
+				"object" : "gold",
+				"message" : "You put a handful of gold coins in your pocket!",
+				"conditions" : [],
+				"postActions" : []
+			},
+			{
+				"verb" : "take",
+				"object" : "jewels",
+				"message" : "You put a handful of shiny stones in your pocket, this is crazy!",
+				"conditions" : [],
+				"postActions" : []
+			},
+			{
+				"verb" : "open",
+				"object" : "crate",
+				"message" : "When you open the crate, you see a key and you take it",
+				"oneTime" : true,
+				"conditions" : [],
+				"postActions" : [
+					{
+						"class" : "addFact",
+						"name" : "lake.key.obtained"
+					}
+				]
+			},
+			{
+				"verb" : "exit",
+				"object" : "room",
+				"conditions" : [],
+				"postActions" : [
+					{
+						"class" : "changeRoom",
+						"name" : "lake"
+					}
+				]
+			},
+			{
+				"verb" : "go",
+				"object" : "back",
+				"conditions" : [],
+				"postActions" : [
+					{
+						"class" : "changeRoom",
+						"name" : "lake"
+					}
+				]
+			}
+		]
+	},
+	
+	{	
+		"name" : "corpses",
+		"description" : "A room full of rotting corpses, the smell makes you feel nauseous...
+						 Some of them still have flesh on them but others are just a pile of bones...
+						 What kind of place is this? You need to get out!",
+		"actions" : [
+			{
+				"verb" : "exit",
+				"object" : "room",
+				"conditions" : [],
+				"postActions" : [
+					{
+						"class" : "changeRoom",
+						"name" : "lake"
+					}
+				]
+			},
+			{
+				"verb" : "go",
+				"object" : "back",
+				"conditions" : [],
+				"postActions" : [
+					{
+						"class" : "changeRoom",
+						"name" : "lake"
+					}
+				]
+			},
+			{
+				"verb" : "take",
+				"object" : "bone",
+				"message" : "You take a bone from one of the corpses. Disgusting!",
+				"conditions" : [],
+				"postActions" : [
+					{
+						"class" : "addFact",
+						"name" : "corpses.bone.obtained"
+					}
+				]
+			},
+		]
+	},
+	
+	{	
+		"name" : "ladder",
+		"description" : "That was close! You enter a small room with a very tall ladder laid against the wall.
+						 Does it go all the way up to the surface?",
+		"actions" : [
+			{
+				"verb" : "exit",
+				"object" : "room",
+				"conditions" : [],
+				"postActions" : [
+					{
+						"class" : "changeRoom",
+						"name" : "lake"
+					}
+				]
+			},
+			{
+				"verb" : "go",
+				"object" : "back",
+				"conditions" : [],
+				"postActions" : [
+					{
+						"class" : "changeRoom",
+						"name" : "lake"
+					}
+				]
+			},
+			{
+				"verb" : "climb",
+				"object" : "ladder",
+				"conditions" : [],
 				"postActions" : [
 					{
 						"class" : "changeRoom",
@@ -21,23 +297,26 @@
 				]
 			},
 			{
-				"verb" : "pick",
-				"object" : "key",
-				"success" : "you picked up the key",
+				"verb" : "use",
+				"object" : "ladder",
 				"conditions" : [],
 				"postActions" : [
 					{
-						"class" : "addFact",
-						"name" : "hasHallKey"
+						"class" : "changeRoom",
+						"name" : "outside"
 					}
 				]
-			}
+			},
 		]
 	},
 	
 	{	
 		"name" : "outside",
-		"description" : "you're outside",
+		"description" : "At last! You're free!
+						 You thought you'd never see the light of day again.
+						 Suddenly you hear a loud roar from the cave that completely paralyses you...
+						 It's getting close.
+						 Someone is not happy you escaped...",
 		"actions" : []
 	}
 ]

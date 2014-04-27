@@ -3,7 +3,7 @@ package com.siondream.ld29.room;
 import com.siondream.ld29.Env;
 import com.siondream.ld29.GameScreen;
 
-public class ChangeRoomPostAction implements PostAction {
+public class ChangeRoomPostAction extends PostAction {
 
 	private String name;
 	

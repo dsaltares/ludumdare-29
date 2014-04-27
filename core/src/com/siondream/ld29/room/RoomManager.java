@@ -2,6 +2,7 @@ package com.siondream.ld29.room;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.siondream.ld29.Assets;
 import com.siondream.ld29.LudumDare;
 
 public class RoomManager {
@@ -38,10 +39,18 @@ public class RoomManager {
 		ActionResult result = null;
 		
 		if (matchingAction != null) {
+			matchingAction.setRoom(currentRoom);
 			result = matchingAction.run();
 		}
 		else {
 			result = new ActionResult(false);
+		}
+		
+		if (result.success && matchingAction.isSuccess()) {
+			Assets.success.play();
+		}
+		else {
+			Assets.failure.play();
 		}
 		
 		return result;

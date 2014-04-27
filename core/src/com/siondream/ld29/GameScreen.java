@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.siondream.ld29.room.Action;
 import com.siondream.ld29.room.ActionResult;
 import com.siondream.ld29.room.AddFactPostAction;
+import com.siondream.ld29.room.ChangeDescriptionPostAction;
 import com.siondream.ld29.room.ChangeRoomPostAction;
 import com.siondream.ld29.room.FactCondition;
 import com.siondream.ld29.room.Room;
@@ -218,6 +219,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 			json.setElementType(Action.class, "conditions", FactCondition.class);
 			json.addClassTag("addFact", AddFactPostAction.class);
 			json.addClassTag("changeRoom", ChangeRoomPostAction.class);
+			json.addClassTag("changeDescription", ChangeDescriptionPostAction.class);
 
 			roomManager = json.fromJson(RoomManager.class,
 					Gdx.files.internal("rooms.json"));
@@ -305,8 +307,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 						actionField.addAction(Actions.alpha(0.0f, 1.0f, Interpolation.pow4Out));
 						
 						if (roomManager.isFinished()) {
-							// GAME FINISHED!!
-							
+							animatePanelsOut();
 						}
 					}
 					
@@ -314,13 +315,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 					resultLabel.reset();
 					
 					textField.setText("");
-					
-					if (result.success) {
-						Assets.success.play();
-					}
-					else {
-						Assets.failure.play();
-					}
 				}
 			}
 			
@@ -404,6 +398,18 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 			.end()
 			.setCallback(callback) 
 			.start(Env.game.getTweenManager());
+	}
+	
+	private void animatePanelsOut() {
+		timeline.beginSequence()
+				.push(Tween.to(resultGroup, ActorTweener.Position, 1.0f)
+						   .target(resultGroup.getX(), -resultGroup.getHeight())
+						   .ease(TweenEquations.easeInOutQuad))
+				.push(Tween.to(actionGroup, ActorTweener.Position, 1.0f)
+						   .target(resultGroup.getX(), -resultGroup.getHeight())
+						   .ease(TweenEquations.easeInOutQuad))
+				.end()
+				.start(Env.game.getTweenManager());
 	}
 
 	private class TypeWriterListener implements
