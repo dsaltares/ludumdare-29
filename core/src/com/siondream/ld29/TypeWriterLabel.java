@@ -17,7 +17,7 @@ public class TypeWriterLabel extends Label {
 	private CompletionListener listener;
 	
 	public TypeWriterLabel(CharSequence text, Skin skin) {
-		this(text, skin, 10.0f);
+		this(text, skin, 30.0f);
 	}
 	
 	public TypeWriterLabel(CharSequence text, Skin skin, float lettersPerSecond) {
@@ -36,6 +36,7 @@ public class TypeWriterLabel extends Label {
 
 	public void reset() {
 		timer = 0.0f;
+		playing = true;
 	}
 	
 	public void stop() {

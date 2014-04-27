@@ -9,6 +9,6 @@ public class ChangeRoomPostAction implements PostAction {
 	
 	@Override
 	public void run() {
-		Env.game.getScreen(GameScreen.class).getRoomManager().setRoom(name);
+		Env.game.getScreen(GameScreen.class).setRoom(name);
 	}
 }

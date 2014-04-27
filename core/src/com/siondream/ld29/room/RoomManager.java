@@ -41,7 +41,7 @@ public class RoomManager {
 			result = matchingAction.run();
 		}
 		else {
-			result = new ActionResult(false, "you cannot do that");
+			result = new ActionResult(false);
 		}
 		
 		Gdx.app.log(LudumDare.TAG, result.message);

@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.siondream.ld29.room.Action;
@@ -27,53 +29,55 @@ import com.siondream.ld29.room.FactCondition;
 import com.siondream.ld29.room.Room;
 import com.siondream.ld29.room.RoomManager;
 
-
 public class GameScreen extends ScreenAdapter implements InputProcessor {
 
 	private RoomManager roomManager;
 	private VignetteController vignetteController;
-	
+
 	// UI Stuff
 	private Stage stage;
 	private TextField actionField;
 	private Image titleImage;
 	private Image backgroundImage;
+	private Image resultImage;
+	private Image actionImage;
+	private Image descriptionImage;
+	private WidgetGroup descriptionGroup;
+	private WidgetGroup actionGroup;
+	private WidgetGroup resultGroup;
 	private TypeWriterLabel descriptionLabel;
 	private TypeWriterLabel resultLabel;
 	private Label actionLabel;
-	
+
 	private float resolution[];
-	
+
 	FrameBuffer fbo;
 	TextureRegion fboRegion;
-	
+
 	public GameScreen() {
 		loadRooms();
-		
+
 		vignetteController = new VignetteController();
-		
+
 		Viewport viewport = Env.game.getViewport();
 		stage = new Stage(viewport);
-		
+
 		resolution = new float[2];
-		
+
 		createUI();
 	}
-	
+
 	@Override
 	public void render(float delta) {
-		// Update UI stuff
-		descriptionLabel.setText(roomManager.getRoom().getDescription());		
-		
 		vignetteController.update(delta);
-		
+
 		// Update stage
 		stage.act(delta);
-		
+
 		Viewport viewport = Env.game.getViewport();
 		resolution[0] = Gdx.graphics.getWidth();
 		resolution[1] = Gdx.graphics.getHeight();
-		
+
 		// Render
 		stage.getSpriteBatch().setShader(null);
 		fbo.begin();
@@ -82,51 +86,52 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 		fbo.end();
-		
-		
+
 		Batch batch = stage.getSpriteBatch();
 		batch.setShader(Assets.shader);
-		
+
 		viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.begin();
-		Assets.shader.setUniform2fv("resolution", resolution , 0, 2);
+		Assets.shader.setUniform2fv("resolution", resolution, 0, 2);
 		Assets.shader.setUniformf("radius", vignetteController.getRadius());
 		batch.draw(fboRegion, 0.0f, 0.0f);
 		batch.end();
-		
+
 		stage.draw();
 	}
 
 	@Override
 	public void dispose() {
-		
+
 	}
-	
+
 	@Override
 	public void hide() {
-		
+
 	}
-	
+
 	@Override
 	public void show() {
 		Gdx.input.setInputProcessor(this);
 		roomManager.reset();
 		stage.setKeyboardFocus(actionField);
+		setRoom(roomManager.getRoom().getName());
 	}
-	
+
 	@Override
-	public void resize(int width, int height) {		
+	public void resize(int width, int height) {
 		positionUI();
 		Viewport viewport = Env.game.getViewport();
-		fbo = new FrameBuffer(Format.RGB888, viewport.getViewportWidth(), viewport.getViewportHeight(), false);
+		fbo = new FrameBuffer(Format.RGB888, viewport.getViewportWidth(),
+				viewport.getViewportHeight(), false);
 		fboRegion = new TextureRegion(fbo.getColorBufferTexture());
 		fboRegion.flip(false, true);
 	}
-	
+
 	public RoomManager getRoomManager() {
 		return roomManager;
 	}
-	
+
 	@Override
 	public boolean keyDown(int keycode) {
 		stage.keyDown(keycode);
@@ -175,22 +180,28 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		return false;
 	}
 	
+	public void setRoom(String name) {
+		roomManager.setRoom(name);
+		descriptionLabel.setText(roomManager.getRoom().getDescription());
+	}
+
 	private void loadRooms() {
-		
+
 		try {
 			Json json = new Json();
 			json.setElementType(Room.class, "actions", Action.class);
 			json.setElementType(Action.class, "conditions", FactCondition.class);
 			json.addClassTag("addFact", AddFactPostAction.class);
 			json.addClassTag("changeRoom", ChangeRoomPostAction.class);
-			
-			roomManager = json.fromJson(RoomManager.class, Gdx.files.internal("rooms.json"));
-			
+
+			roomManager = json.fromJson(RoomManager.class,
+					Gdx.files.internal("rooms.json"));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void createUI() {
 		actionLabel = new Label("What do you do?", Assets.skin);
 		actionLabel.setColor(Color.WHITE);
@@ -203,7 +214,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		
 		backgroundImage = new Image(Assets.background);
 		
-		descriptionLabel = new TypeWriterLabel("This is supposed to be a super long description", Assets.skin);
+		actionImage = new Image(Assets.smallPanel);
+		resultImage = new Image(Assets.smallPanel);
+		descriptionImage = new Image(Assets.descriptionPanel);
+		
+		descriptionLabel = new TypeWriterLabel("", Assets.skin);
 		descriptionLabel.setSize(800.0f, 300.0f);
 		descriptionLabel.setWrap(true);
 		descriptionLabel.setCompletionListener(new TypeWriterListener());
@@ -211,12 +226,25 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		resultLabel = new TypeWriterLabel("", Assets.skin);
 		resultLabel.setCompletionListener(new TypeWriterListener());
 		
+		resultGroup = new WidgetGroup();
+		descriptionGroup = new WidgetGroup();
+		actionGroup = new WidgetGroup();
+		
+		resultGroup.addActor(resultImage);
+		resultGroup.addActor(resultLabel);
+		
+		descriptionGroup.addActor(descriptionImage);
+		descriptionGroup.addActor(descriptionLabel);
+		
+		actionGroup.addActor(actionImage);
+		actionGroup.addActor(actionLabel);
+		actionGroup.addActor(actionField);
+		
 		stage.addActor(backgroundImage);
-		stage.addActor(actionLabel);
-		stage.addActor(actionField);
+		stage.addActor(actionGroup);
 		stage.addActor(titleImage);
-		stage.addActor(descriptionLabel);
-		stage.addActor(resultLabel);
+		stage.addActor(descriptionGroup);
+		stage.addActor(resultGroup);
 		
 		actionField.setTextFieldListener(new TextFieldListener() {
 
@@ -226,22 +254,26 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 					String text = textField.getText();
 					String[] parts = text.toLowerCase().split(" ");
 					
+					ActionResult result = new ActionResult(false);
+					
 					if (parts.length >= 2) {
 						String verb = parts[0];
 						String object = parts[1];
 						
-						ActionResult result = roomManager.runAction(verb, object);
+						result = roomManager.runAction(verb, object);
 						
-						actionLabel.setVisible(false);
 						actionField.setTouchable(Touchable.disabled);
-						
-						resultLabel.setText(result.message);
+						actionLabel.addAction(Actions.alpha(0.0f, 1.0f, Interpolation.pow4Out));
+						actionField.addAction(Actions.alpha(0.0f, 1.0f, Interpolation.pow4Out));
 						
 						if (roomManager.isFinished()) {
 							// GAME FINISHED!!
 							
 						}
 					}
+					
+					resultLabel.setText(result.message);
+					resultLabel.reset();
 					
 					textField.setText("");
 				}
@@ -251,38 +283,52 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 		
 		positionUI();
 	}
-	
-	private void positionUI() {	
+
+	private void positionUI() {
 		titleImage.setX((stage.getWidth() - titleImage.getWidth()) * 0.5f);
 		titleImage.setY(stage.getHeight() - titleImage.getHeight() - 40.0f);
+
+		descriptionGroup.setSize(descriptionImage.getWidth(), descriptionImage.getHeight());
+		descriptionGroup.setX((stage.getWidth() - descriptionGroup.getWidth()) * 0.5f);
+		descriptionGroup.setY(200.0f);
 		
-		descriptionLabel.setX((stage.getWidth() - descriptionLabel.getWidth()) * 0.5f);
-		descriptionLabel.setY(200.0f);
+		descriptionLabel.setAlignment(Align.left);
+		descriptionLabel.setSize(descriptionGroup.getWidth() - 60.0f, descriptionGroup.getHeight() - 60.0f);
+		descriptionLabel.setPosition(30.0f, 30.0f);
+			
+		actionGroup.setSize(actionImage.getWidth(), actionImage.getHeight());
+		actionGroup.setPosition(descriptionGroup.getX(), 60.0f);
 		
-		actionLabel.setPosition(descriptionLabel.getX(), 40.0f);
+		actionLabel.setPosition(30.0f, (actionGroup.getHeight() - actionLabel.getHeight()) * 0.5f);
+		actionField.setPosition(actionLabel.getRight() + 20.0f, (actionGroup.getHeight() - actionField.getHeight()) * 0.5f);
+		actionField.setWidth(actionGroup.getWidth() - actionField.getX() - 30.0f);
+
+		resultGroup.setSize(resultImage.getWidth(), resultImage.getHeight());
+		resultGroup.setPosition(descriptionGroup.getX(), descriptionGroup.getY() - 50.0f);
 		
-		actionField.setPosition(actionLabel.getRight() + 20.0f, actionLabel.getY());
+		resultLabel.setPosition(30.0f, (resultGroup.getHeight() - resultLabel.getHeight()) * 0.5f);
 		
-		resultLabel.setPosition(descriptionLabel.getX(), descriptionLabel.getY() - 50.0f);
 	}
-	
-	private class TypeWriterListener implements TypeWriterLabel.CompletionListener {
+
+	private class TypeWriterListener implements
+			TypeWriterLabel.CompletionListener {
 
 		@Override
 		public void onFinished(TypeWriterLabel label) {
 			actionField.setTouchable(Touchable.enabled);
-			
+
 			actionField.setVisible(true);
 			actionLabel.setVisible(true);
-			
+
 			Color labelColor = actionLabel.getColor();
 			actionLabel.setColor(labelColor.r, labelColor.g, labelColor.b, 0.0f);
 			actionLabel.addAction(Actions.alpha(1.0f, 2.5f, Interpolation.pow4Out));
-			
+
 			Color fieldColor = actionField.getColor();
 			actionField.setColor(fieldColor.r, fieldColor.g, fieldColor.b, 0.0f);
 			actionField.addAction(Actions.alpha(1.0f, 2.5f, Interpolation.pow4Out));
 		}
-		
+
 	}
 }
+
