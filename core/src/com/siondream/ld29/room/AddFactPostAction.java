@@ -9,6 +9,7 @@ public class AddFactPostAction extends PostAction {
 	
 	@Override
 	public void run() {
-		Env.game.getScreen(GameScreen.class).getRoomManager().addFact(name);		
+		GameScreen screen = (GameScreen)Env.game.getScreen(GameScreen.class);
+		screen.getRoomManager().addFact(name);		
 	}
 }

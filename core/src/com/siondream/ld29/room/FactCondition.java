@@ -10,7 +10,8 @@ public class FactCondition {
 	private boolean negation;
 	
 	public boolean isMet() {
-		RoomManager manager = Env.game.getScreen(GameScreen.class).getRoomManager();
+		GameScreen screen = (GameScreen)Env.game.getScreen(GameScreen.class);
+		RoomManager manager = screen.getRoomManager();
 		boolean hasFact = manager.hasFact(name);
 		return (negation && !hasFact || !negation && hasFact); 
 	}

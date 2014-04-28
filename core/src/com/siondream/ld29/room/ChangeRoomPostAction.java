@@ -9,6 +9,7 @@ public class ChangeRoomPostAction extends PostAction {
 	
 	@Override
 	public void run() {
-		Env.game.getScreen(GameScreen.class).setRoom(name);
+		GameScreen screen = (GameScreen)Env.game.getScreen(GameScreen.class);
+		screen.setRoom(name);
 	}
 }
